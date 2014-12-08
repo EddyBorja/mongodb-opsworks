@@ -118,12 +118,20 @@ end
 #        mongodb_shard_name:#{node['mongodb']['shard_name']} AND \
 #        chef_environment:_default"
 #     )
-nodes = search(
-      node[:mongodb][:collection_name],
-      "mongodb_cluster_name:#{node[:mongodb][:cluster_name]} AND \
-       mongodb_is_shard:true AND \
-       chef_environment:#{node.chef_environment}"
-)
+
+begin
+	nodes = search(
+		  node[:mongodb][:collection_name],
+		  "mongodb_cluster_name:#{node[:mongodb][:cluster_name]} AND \
+		   mongodb_is_shard:true AND \
+		   chef_environment:#{node.chef_environment}"
+	)
+rescue
+	# this search may fail (Chef zero not running????). REVIEW: 01-04-2014: Why is this, it's supposed to be running??!
+	nodes = []
+	
+	Chef::Log.warn("SEARCH FAILED, SETTING NODES TO []")
+end
 
 nodes.each_index do |n|
 Chef::Log.info("Node is #{n}")
