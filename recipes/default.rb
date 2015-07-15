@@ -39,7 +39,8 @@ def save_item(layer,item)
 	instance_root_node = node['opsworks']['layers'][layer]['instances'][item.name]
 	item.automatic['hostname'] = item.name
 	Chef::Log.warn("Object dump: #{item.to_json}") if node['mongodb-opsworks']['debug_objects']
-	item.automatic['fqdn'] = instance_root_node['private_dns_name']
+	#item.automatic['fqdn'] = instance_root_node['private_dns_name']
+	item.automatic['fqdn'] = item.name + ".localdomain"
 	item.automatic['ipaddress'] = instance_root_node['private_ip']
 	#Don't duplicate the current node.
 	unless node['hostname'] == item.name
